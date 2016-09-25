@@ -19,8 +19,8 @@ object PaintShop {
 
     val output = areBaseCasesValid(baseCases) match {
       case true =>
-        val generatedBatch  = generatePaintsInBatch(customers)
-        val fullBatch       = populateEmptyColours(noColoursInBatch, generatedBatch)
+        val generatedBatch = generatePaintsInBatch(customers)
+        val fullBatch = populateEmptyColours(noColoursInBatch, generatedBatch)
         fullBatch.sortBy(_.colourId).map(_.paintType.value).mkString(" ")
       case false =>
         "No solution exists"
@@ -29,11 +29,11 @@ object PaintShop {
     output
   }
 
-  def areBaseCasesValid(baseCases: List[Paint]): Boolean = {
+  private def areBaseCasesValid(baseCases: List[Paint]): Boolean = {
     !baseCases.groupBy(_.colourId).exists(_._2.size > 1)
   }
 
-  def extractCustomerBaseCases(customers: List[Customer]): List[Paint] = {
+  private def extractCustomerBaseCases(customers: List[Customer]): List[Paint] = {
     val baseCases = for {
       c <- customers
       p <- c.paints
@@ -43,18 +43,18 @@ object PaintShop {
     baseCases.distinct
   }
 
-  def populateEmptyColours(noColoursInBatch: Int, generatedBatch: List[Paint]): List[Paint] = {
+  private def populateEmptyColours(noColoursInBatch: Int, generatedBatch: List[Paint]): List[Paint] = {
     val nonBatchedColours = (1 to noColoursInBatch).map(colourId => colourId).diff(generatedBatch.map(_.colourId)).toList
 
     if (nonBatchedColours.isEmpty) generatedBatch else generatedBatch.union(nonBatchedColours.map(new Paint(_, Gloss)))
   }
 
-  def readFileData(fileName: String): Iterator[String] = {
+  private def readFileData(fileName: String): Iterator[String] = {
     val stream: InputStream = getClass.getResourceAsStream(fileName)
     scala.io.Source.fromInputStream(stream).getLines
   }
 
-  def generatePaintsInBatch(initialCustomers: List[Customer]): List[Paint] = {
+  private def generatePaintsInBatch(initialCustomers: List[Customer]): List[Paint] = {
 
     def generate(paintsToBeChecked: List[Paint], remainingCustomers: List[Customer]): List[Paint] = {
       remainingCustomers match {
@@ -77,11 +77,11 @@ object PaintShop {
     generate(extractCustomerBaseCases(initialCustomers), initialCustomers)
   }
 
-  def customersFromFile(fileData: Iterator[String]): List[Customer] = {
+  private def customersFromFile(fileData: Iterator[String]): List[Customer] = {
     (fileData map customerFromLine).toList
   }
 
-  def customerFromLine(line: String): Customer = {
+  private def customerFromLine(line: String): Customer = {
     val lineSpacesRemoved = line.replaceAll(" ", "")
     val colours = lineSpacesRemoved.toList.filter(_.isDigit)
     val paintTypes = lineSpacesRemoved.toList.filter(!_.isDigit)
