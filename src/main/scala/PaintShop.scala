@@ -17,20 +17,16 @@ object PaintShop {
 
     val baseCases = extractCustomerBaseCases(customers)
 
-    if (areBaseCasesValid(baseCases)) {
-      val generatedBatch = generatePaintsInBatch(customers)
-
-      val fullBatch = populateEmptyColours(noColoursInBatch, generatedBatch)
-
-      val output = fullBatch.sortBy(_.colourId).map(_.paintType.value).mkString(" ")
-
-      println(output)
-      output
-    } else {
-      val output = "No solution exists"
-      println(output)
-      output
+    val output = areBaseCasesValid(baseCases) match {
+      case true =>
+        val generatedBatch  = generatePaintsInBatch(customers)
+        val fullBatch       = populateEmptyColours(noColoursInBatch, generatedBatch)
+        fullBatch.sortBy(_.colourId).map(_.paintType.value).mkString(" ")
+      case false =>
+        "No solution exists"
     }
+    println(output)
+    output
   }
 
   def areBaseCasesValid(baseCases: List[Paint]): Boolean = {
