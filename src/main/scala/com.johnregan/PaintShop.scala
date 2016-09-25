@@ -1,7 +1,6 @@
 
 import java.io.InputStream
 
-import scala.collection.mutable
 
 sealed trait PaintType {
   def value: String
@@ -101,7 +100,7 @@ object PaintShop {
   }
 
   def getCustomersFromFile(fileData: Iterator[String]): List[Customer] = {
-    val mutableCustomers: mutable.MutableList[Customer] = mutable.MutableList()
+    val mutableCustomers: scala.collection.mutable.MutableList[Customer] = scala.collection.mutable.MutableList()
     for (line <- fileData) {
       mutableCustomers += getCustomerFromLine(line)
     }
